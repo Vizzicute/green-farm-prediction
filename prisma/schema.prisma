@@ -1,0 +1,276 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum SubDuration {
+  D10
+  D20
+  D30
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+  ARCHIVED
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum CommentType {
+  BLOG
+  SUBSCRIPTION
+}
+
+enum NotificationType {
+  NEW_COMMENT
+  NEW_SUBSCRIPTION
+  EXPIRED_SUBSCRIPTION
+  NEW_USER
+}
+
+enum SportType {
+  FOOTBALL
+  BASKETBALL
+}
+
+enum PredictionStatus {
+  PENDING
+  WON
+  LOST
+  VOID
+}
+
+model SubscriptionCategory {
+  id          String @id @default(uuid())
+  name        String @db.Text
+  minOdds     Float
+  maxOdds     Float
+  uniqueColor String @db.VarChar(7)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  predictions   Prediction[]
+  subscriptions Subscription[]
+
+  @@map("subscription_category")
+}
+
+model Subscription {
+  id                     String                @id @default(uuid())
+  duration               SubDuration
+  isActive               Boolean               @default(true)
+  isFreezed              Boolean               @default(false)
+  freezeStart            DateTime?
+  freezeEnd              DateTime?
+  SubscriptionCategory   SubscriptionCategory? @relation(fields: [subscriptionCategoryId], references: [id])
+  subscriptionCategoryId String?
+
+  renewedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  @@map("subscription")
+  @@unique([userId, subscriptionCategoryId])
+}
+
+model Prediction {
+  id                     String                @id @default(uuid())
+  sport                  SportType
+  datetime               DateTime
+  league                 String                @db.Text
+  tip                    String                @db.Text
+  odds                   Float
+  winProb                Float                 @default(80)
+  homeTeam               String                @db.Text
+  awayTeam               String                @db.Text
+  homescore              String?               @default("?")
+  awayscore              String?               @default("?")
+  status                 PredictionStatus?     @default(PENDING)
+  over                   String                @db.Text
+  chance                 String                @db.Text
+  either                 String                @db.Text
+  htft                   String                @db.Text
+  btts                   Boolean               @default(false)
+  banker                 Boolean               @default(false)
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @default(now()) @updatedAt
+  SubscriptionCategory   SubscriptionCategory? @relation(fields: [subscriptionCategoryId], references: [id])
+  subscriptionCategoryId String?
+
+  @@map("prediction")
+}
+
+model Settings {
+  id        String   @id @default(uuid())
+  category  String   @db.Text
+  value     String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("settings")
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  type      NotificationType
+  message   String           @db.Text
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @default(now()) @updatedAt
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification")
+}
+
+model PageData {
+  id          String   @id @default(uuid())
+  title       String   @db.Text
+  slug        String
+  h1tag       String   @db.Text
+  description String   @db.Text
+  content     String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@unique([slug])
+  @@map("page_data")
+}
+
+model Blog {
+  id            String     @id @default(uuid())
+  title         String     @db.Text
+  slug          String
+  status        BlogStatus @default(DRAFT)
+  content       String     @db.Text
+  featuredImage String
+  publishedAt   DateTime?
+  authorId      String
+  author        User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now()) @updatedAt
+
+  categories BlogCategory[]
+  comments   Comment[]
+
+  @@unique([slug, featuredImage])
+  @@map("blog")
+}
+
+model BlogCategory {
+  id        String   @id @default(uuid())
+  name      String   @db.Text
+  slug      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  blogs Blog[]
+
+  @@unique([slug])
+  @@map("blog_category")
+}
+
+model Comment {
+  id         String        @id @default(uuid())
+  type       CommentType
+  guestName  String        @db.Text
+  guestEmail String
+  content    String        @db.Text
+  status     CommentStatus @default(PENDING)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @default(now()) @updatedAt
+  blogId     String?
+  blog       Blog?         @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  userId     String?
+  user       User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([guestEmail])
+  @@map("comment")
+}
+
+model User {
+  id            String         @id
+  name          String         @db.Text
+  email         String
+  emailVerified Boolean        @default(false)
+  image         String?        @db.Text
+  active        Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  blogs         Blog[]
+  Comment       Comment[]
+  Notification  Notification[]
+  subscriptions Subscription[]
+
+  role       String?   @db.Text
+  banned     Boolean?  @default(false)
+  banReason  String?   @db.Text
+  banExpires DateTime?
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?  @db.Text
+  userAgent String?  @db.Text
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  impersonatedBy String? @db.Text
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String    @db.Text
+  providerId            String    @db.Text
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?   @db.Text
+  refreshToken          String?   @db.Text
+  idToken               String?   @db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?   @db.Text
+  password              String?   @db.Text
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String   @db.Text
+  value      String   @db.Text
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("verification")
+}
