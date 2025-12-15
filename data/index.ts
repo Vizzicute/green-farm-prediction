@@ -4,8 +4,8 @@ export const navbarLinks = [
     link: "/",
   },
   {
-    text: "Vip Packages",
-    link: "#",
+    text: "Blogs",
+    link: "/blogs",
   },
   {
     text: "Livescore",

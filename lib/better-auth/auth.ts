@@ -7,6 +7,8 @@ import { resend } from "../resend";
 import { EmailVerificationTemplate } from "@/components/email-template/verify-email";
 
 export const auth = betterAuth({
+  // Allowed origins for Better Auth requests (add localhost for local dev)
+  trustedOrigins: [env.NEXT_PUBLIC_APP_URL, "http://localhost:3000"],
   database: prismaAdapter(prisma, {
     provider: "mysql",
   }),

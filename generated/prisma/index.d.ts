@@ -10284,13 +10284,13 @@ export namespace Prisma {
   export type CommentGroupByOutputType = {
     id: string
     type: $Enums.CommentType
-    guestName: string
-    guestEmail: string
+    guestName: string | null
+    guestEmail: string | null
     content: string
     status: $Enums.CommentStatus
     createdAt: Date
     updatedAt: Date
-    blogId: string | null
+    blogId: string
     userId: string | null
     _count: CommentCountAggregateOutputType | null
     _min: CommentMinAggregateOutputType | null
@@ -10322,7 +10322,7 @@ export namespace Prisma {
     updatedAt?: boolean
     blogId?: boolean
     userId?: boolean
-    blog?: boolean | Comment$blogArgs<ExtArgs>
+    blog?: boolean | BlogDefaultArgs<ExtArgs>
     user?: boolean | Comment$userArgs<ExtArgs>
   }, ExtArgs["result"]["comment"]>
 
@@ -10343,26 +10343,26 @@ export namespace Prisma {
 
   export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "guestName" | "guestEmail" | "content" | "status" | "createdAt" | "updatedAt" | "blogId" | "userId", ExtArgs["result"]["comment"]>
   export type CommentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    blog?: boolean | Comment$blogArgs<ExtArgs>
+    blog?: boolean | BlogDefaultArgs<ExtArgs>
     user?: boolean | Comment$userArgs<ExtArgs>
   }
 
   export type $CommentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Comment"
     objects: {
-      blog: Prisma.$BlogPayload<ExtArgs> | null
+      blog: Prisma.$BlogPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       type: $Enums.CommentType
-      guestName: string
-      guestEmail: string
+      guestName: string | null
+      guestEmail: string | null
       content: string
       status: $Enums.CommentStatus
       createdAt: Date
       updatedAt: Date
-      blogId: string | null
+      blogId: string
       userId: string | null
     }, ExtArgs["result"]["comment"]>
     composites: {}
@@ -10704,7 +10704,7 @@ export namespace Prisma {
    */
   export interface Prisma__CommentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    blog<T extends Comment$blogArgs<ExtArgs> = {}>(args?: Subset<T, Comment$blogArgs<ExtArgs>>): Prisma__BlogClient<$Result.GetResult<Prisma.$BlogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    blog<T extends BlogDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BlogDefaultArgs<ExtArgs>>): Prisma__BlogClient<$Result.GetResult<Prisma.$BlogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends Comment$userArgs<ExtArgs> = {}>(args?: Subset<T, Comment$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -11085,25 +11085,6 @@ export namespace Prisma {
      * Limit how many Comments to delete.
      */
     limit?: number
-  }
-
-  /**
-   * Comment.blog
-   */
-  export type Comment$blogArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Blog
-     */
-    select?: BlogSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Blog
-     */
-    omit?: BlogOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlogInclude<ExtArgs> | null
-    where?: BlogWhereInput
   }
 
   /**
@@ -16194,12 +16175,11 @@ export namespace Prisma {
 
   export type BlogWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    slug_featuredImage?: BlogSlugFeaturedImageCompoundUniqueInput
+    slug?: string
     AND?: BlogWhereInput | BlogWhereInput[]
     OR?: BlogWhereInput[]
     NOT?: BlogWhereInput | BlogWhereInput[]
     title?: StringFilter<"Blog"> | string
-    slug?: StringFilter<"Blog"> | string
     status?: EnumBlogStatusFilter<"Blog"> | $Enums.BlogStatus
     content?: StringFilter<"Blog"> | string
     featuredImage?: StringFilter<"Blog"> | string
@@ -16210,7 +16190,7 @@ export namespace Prisma {
     author?: XOR<UserScalarRelationFilter, UserWhereInput>
     categories?: BlogCategoryListRelationFilter
     comments?: CommentListRelationFilter
-  }, "id" | "slug_featuredImage">
+  }, "id" | "slug">
 
   export type BlogOrderByWithAggregationInput = {
     id?: SortOrder
@@ -16306,28 +16286,28 @@ export namespace Prisma {
     NOT?: CommentWhereInput | CommentWhereInput[]
     id?: StringFilter<"Comment"> | string
     type?: EnumCommentTypeFilter<"Comment"> | $Enums.CommentType
-    guestName?: StringFilter<"Comment"> | string
-    guestEmail?: StringFilter<"Comment"> | string
+    guestName?: StringNullableFilter<"Comment"> | string | null
+    guestEmail?: StringNullableFilter<"Comment"> | string | null
     content?: StringFilter<"Comment"> | string
     status?: EnumCommentStatusFilter<"Comment"> | $Enums.CommentStatus
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
-    blogId?: StringNullableFilter<"Comment"> | string | null
+    blogId?: StringFilter<"Comment"> | string
     userId?: StringNullableFilter<"Comment"> | string | null
-    blog?: XOR<BlogNullableScalarRelationFilter, BlogWhereInput> | null
+    blog?: XOR<BlogScalarRelationFilter, BlogWhereInput>
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type CommentOrderByWithRelationInput = {
     id?: SortOrder
     type?: SortOrder
-    guestName?: SortOrder
-    guestEmail?: SortOrder
+    guestName?: SortOrderInput | SortOrder
+    guestEmail?: SortOrderInput | SortOrder
     content?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    blogId?: SortOrderInput | SortOrder
+    blogId?: SortOrder
     userId?: SortOrderInput | SortOrder
     blog?: BlogOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
@@ -16336,32 +16316,32 @@ export namespace Prisma {
 
   export type CommentWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    guestEmail?: string
     AND?: CommentWhereInput | CommentWhereInput[]
     OR?: CommentWhereInput[]
     NOT?: CommentWhereInput | CommentWhereInput[]
     type?: EnumCommentTypeFilter<"Comment"> | $Enums.CommentType
-    guestName?: StringFilter<"Comment"> | string
+    guestName?: StringNullableFilter<"Comment"> | string | null
+    guestEmail?: StringNullableFilter<"Comment"> | string | null
     content?: StringFilter<"Comment"> | string
     status?: EnumCommentStatusFilter<"Comment"> | $Enums.CommentStatus
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
-    blogId?: StringNullableFilter<"Comment"> | string | null
+    blogId?: StringFilter<"Comment"> | string
     userId?: StringNullableFilter<"Comment"> | string | null
-    blog?: XOR<BlogNullableScalarRelationFilter, BlogWhereInput> | null
+    blog?: XOR<BlogScalarRelationFilter, BlogWhereInput>
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
-  }, "id" | "guestEmail">
+  }, "id">
 
   export type CommentOrderByWithAggregationInput = {
     id?: SortOrder
     type?: SortOrder
-    guestName?: SortOrder
-    guestEmail?: SortOrder
+    guestName?: SortOrderInput | SortOrder
+    guestEmail?: SortOrderInput | SortOrder
     content?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    blogId?: SortOrderInput | SortOrder
+    blogId?: SortOrder
     userId?: SortOrderInput | SortOrder
     _count?: CommentCountOrderByAggregateInput
     _max?: CommentMaxOrderByAggregateInput
@@ -16374,13 +16354,13 @@ export namespace Prisma {
     NOT?: CommentScalarWhereWithAggregatesInput | CommentScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Comment"> | string
     type?: EnumCommentTypeWithAggregatesFilter<"Comment"> | $Enums.CommentType
-    guestName?: StringWithAggregatesFilter<"Comment"> | string
-    guestEmail?: StringWithAggregatesFilter<"Comment"> | string
+    guestName?: StringNullableWithAggregatesFilter<"Comment"> | string | null
+    guestEmail?: StringNullableWithAggregatesFilter<"Comment"> | string | null
     content?: StringWithAggregatesFilter<"Comment"> | string
     status?: EnumCommentStatusWithAggregatesFilter<"Comment"> | $Enums.CommentStatus
     createdAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
-    blogId?: StringNullableWithAggregatesFilter<"Comment"> | string | null
+    blogId?: StringWithAggregatesFilter<"Comment"> | string
     userId?: StringNullableWithAggregatesFilter<"Comment"> | string | null
   }
 
@@ -17424,73 +17404,73 @@ export namespace Prisma {
   export type CommentCreateInput = {
     id?: string
     type: $Enums.CommentType
-    guestName: string
-    guestEmail: string
+    guestName?: string | null
+    guestEmail?: string | null
     content: string
     status?: $Enums.CommentStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    blog?: BlogCreateNestedOneWithoutCommentsInput
+    blog: BlogCreateNestedOneWithoutCommentsInput
     user?: UserCreateNestedOneWithoutCommentInput
   }
 
   export type CommentUncheckedCreateInput = {
     id?: string
     type: $Enums.CommentType
-    guestName: string
-    guestEmail: string
+    guestName?: string | null
+    guestEmail?: string | null
     content: string
     status?: $Enums.CommentStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    blogId?: string | null
+    blogId: string
     userId?: string | null
   }
 
   export type CommentUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumCommentTypeFieldUpdateOperationsInput | $Enums.CommentType
-    guestName?: StringFieldUpdateOperationsInput | string
-    guestEmail?: StringFieldUpdateOperationsInput | string
+    guestName?: NullableStringFieldUpdateOperationsInput | string | null
+    guestEmail?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    blog?: BlogUpdateOneWithoutCommentsNestedInput
+    blog?: BlogUpdateOneRequiredWithoutCommentsNestedInput
     user?: UserUpdateOneWithoutCommentNestedInput
   }
 
   export type CommentUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumCommentTypeFieldUpdateOperationsInput | $Enums.CommentType
-    guestName?: StringFieldUpdateOperationsInput | string
-    guestEmail?: StringFieldUpdateOperationsInput | string
+    guestName?: NullableStringFieldUpdateOperationsInput | string | null
+    guestEmail?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    blogId?: NullableStringFieldUpdateOperationsInput | string | null
+    blogId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CommentCreateManyInput = {
     id?: string
     type: $Enums.CommentType
-    guestName: string
-    guestEmail: string
+    guestName?: string | null
+    guestEmail?: string | null
     content: string
     status?: $Enums.CommentStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    blogId?: string | null
+    blogId: string
     userId?: string | null
   }
 
   export type CommentUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumCommentTypeFieldUpdateOperationsInput | $Enums.CommentType
-    guestName?: StringFieldUpdateOperationsInput | string
-    guestEmail?: StringFieldUpdateOperationsInput | string
+    guestName?: NullableStringFieldUpdateOperationsInput | string | null
+    guestEmail?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17500,13 +17480,13 @@ export namespace Prisma {
   export type CommentUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumCommentTypeFieldUpdateOperationsInput | $Enums.CommentType
-    guestName?: StringFieldUpdateOperationsInput | string
-    guestEmail?: StringFieldUpdateOperationsInput | string
+    guestName?: NullableStringFieldUpdateOperationsInput | string | null
+    guestEmail?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    blogId?: NullableStringFieldUpdateOperationsInput | string | null
+    blogId?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -18485,11 +18465,6 @@ export namespace Prisma {
     search: string
   }
 
-  export type BlogSlugFeaturedImageCompoundUniqueInput = {
-    slug: string
-    featuredImage: string
-  }
-
   export type BlogCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
@@ -18593,9 +18568,9 @@ export namespace Prisma {
     not?: NestedEnumCommentStatusFilter<$PrismaModel> | $Enums.CommentStatus
   }
 
-  export type BlogNullableScalarRelationFilter = {
-    is?: BlogWhereInput | null
-    isNot?: BlogWhereInput | null
+  export type BlogScalarRelationFilter = {
+    is?: BlogWhereInput
+    isNot?: BlogWhereInput
   }
 
   export type CommentOrderByRelevanceInput = {
@@ -19232,12 +19207,10 @@ export namespace Prisma {
     set?: $Enums.CommentStatus
   }
 
-  export type BlogUpdateOneWithoutCommentsNestedInput = {
+  export type BlogUpdateOneRequiredWithoutCommentsNestedInput = {
     create?: XOR<BlogCreateWithoutCommentsInput, BlogUncheckedCreateWithoutCommentsInput>
     connectOrCreate?: BlogCreateOrConnectWithoutCommentsInput
     upsert?: BlogUpsertWithoutCommentsInput
-    disconnect?: BlogWhereInput | boolean
-    delete?: BlogWhereInput | boolean
     connect?: BlogWhereUniqueInput
     update?: XOR<XOR<BlogUpdateToOneWithWhereWithoutCommentsInput, BlogUpdateWithoutCommentsInput>, BlogUncheckedUpdateWithoutCommentsInput>
   }
@@ -20395,8 +20368,8 @@ export namespace Prisma {
   export type CommentCreateWithoutBlogInput = {
     id?: string
     type: $Enums.CommentType
-    guestName: string
-    guestEmail: string
+    guestName?: string | null
+    guestEmail?: string | null
     content: string
     status?: $Enums.CommentStatus
     createdAt?: Date | string
@@ -20407,8 +20380,8 @@ export namespace Prisma {
   export type CommentUncheckedCreateWithoutBlogInput = {
     id?: string
     type: $Enums.CommentType
-    guestName: string
-    guestEmail: string
+    guestName?: string | null
+    guestEmail?: string | null
     content: string
     status?: $Enums.CommentStatus
     createdAt?: Date | string
@@ -20526,13 +20499,13 @@ export namespace Prisma {
     NOT?: CommentScalarWhereInput | CommentScalarWhereInput[]
     id?: StringFilter<"Comment"> | string
     type?: EnumCommentTypeFilter<"Comment"> | $Enums.CommentType
-    guestName?: StringFilter<"Comment"> | string
-    guestEmail?: StringFilter<"Comment"> | string
+    guestName?: StringNullableFilter<"Comment"> | string | null
+    guestEmail?: StringNullableFilter<"Comment"> | string | null
     content?: StringFilter<"Comment"> | string
     status?: EnumCommentStatusFilter<"Comment"> | $Enums.CommentStatus
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
-    blogId?: StringNullableFilter<"Comment"> | string | null
+    blogId?: StringFilter<"Comment"> | string
     userId?: StringNullableFilter<"Comment"> | string | null
   }
 
@@ -20882,25 +20855,25 @@ export namespace Prisma {
   export type CommentCreateWithoutUserInput = {
     id?: string
     type: $Enums.CommentType
-    guestName: string
-    guestEmail: string
+    guestName?: string | null
+    guestEmail?: string | null
     content: string
     status?: $Enums.CommentStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    blog?: BlogCreateNestedOneWithoutCommentsInput
+    blog: BlogCreateNestedOneWithoutCommentsInput
   }
 
   export type CommentUncheckedCreateWithoutUserInput = {
     id?: string
     type: $Enums.CommentType
-    guestName: string
-    guestEmail: string
+    guestName?: string | null
+    guestEmail?: string | null
     content: string
     status?: $Enums.CommentStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    blogId?: string | null
+    blogId: string
   }
 
   export type CommentCreateOrConnectWithoutUserInput = {
@@ -21459,8 +21432,8 @@ export namespace Prisma {
   export type CommentCreateManyBlogInput = {
     id?: string
     type: $Enums.CommentType
-    guestName: string
-    guestEmail: string
+    guestName?: string | null
+    guestEmail?: string | null
     content: string
     status?: $Enums.CommentStatus
     createdAt?: Date | string
@@ -21495,8 +21468,8 @@ export namespace Prisma {
   export type CommentUpdateWithoutBlogInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumCommentTypeFieldUpdateOperationsInput | $Enums.CommentType
-    guestName?: StringFieldUpdateOperationsInput | string
-    guestEmail?: StringFieldUpdateOperationsInput | string
+    guestName?: NullableStringFieldUpdateOperationsInput | string | null
+    guestEmail?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21507,8 +21480,8 @@ export namespace Prisma {
   export type CommentUncheckedUpdateWithoutBlogInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumCommentTypeFieldUpdateOperationsInput | $Enums.CommentType
-    guestName?: StringFieldUpdateOperationsInput | string
-    guestEmail?: StringFieldUpdateOperationsInput | string
+    guestName?: NullableStringFieldUpdateOperationsInput | string | null
+    guestEmail?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21519,8 +21492,8 @@ export namespace Prisma {
   export type CommentUncheckedUpdateManyWithoutBlogInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumCommentTypeFieldUpdateOperationsInput | $Enums.CommentType
-    guestName?: StringFieldUpdateOperationsInput | string
-    guestEmail?: StringFieldUpdateOperationsInput | string
+    guestName?: NullableStringFieldUpdateOperationsInput | string | null
+    guestEmail?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21610,13 +21583,13 @@ export namespace Prisma {
   export type CommentCreateManyUserInput = {
     id?: string
     type: $Enums.CommentType
-    guestName: string
-    guestEmail: string
+    guestName?: string | null
+    guestEmail?: string | null
     content: string
     status?: $Enums.CommentStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    blogId?: string | null
+    blogId: string
   }
 
   export type NotificationCreateManyUserInput = {
@@ -21762,37 +21735,37 @@ export namespace Prisma {
   export type CommentUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumCommentTypeFieldUpdateOperationsInput | $Enums.CommentType
-    guestName?: StringFieldUpdateOperationsInput | string
-    guestEmail?: StringFieldUpdateOperationsInput | string
+    guestName?: NullableStringFieldUpdateOperationsInput | string | null
+    guestEmail?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    blog?: BlogUpdateOneWithoutCommentsNestedInput
+    blog?: BlogUpdateOneRequiredWithoutCommentsNestedInput
   }
 
   export type CommentUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumCommentTypeFieldUpdateOperationsInput | $Enums.CommentType
-    guestName?: StringFieldUpdateOperationsInput | string
-    guestEmail?: StringFieldUpdateOperationsInput | string
+    guestName?: NullableStringFieldUpdateOperationsInput | string | null
+    guestEmail?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    blogId?: NullableStringFieldUpdateOperationsInput | string | null
+    blogId?: StringFieldUpdateOperationsInput | string
   }
 
   export type CommentUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumCommentTypeFieldUpdateOperationsInput | $Enums.CommentType
-    guestName?: StringFieldUpdateOperationsInput | string
-    guestEmail?: StringFieldUpdateOperationsInput | string
+    guestName?: NullableStringFieldUpdateOperationsInput | string | null
+    guestEmail?: NullableStringFieldUpdateOperationsInput | string | null
     content?: StringFieldUpdateOperationsInput | string
     status?: EnumCommentStatusFieldUpdateOperationsInput | $Enums.CommentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    blogId?: NullableStringFieldUpdateOperationsInput | string | null
+    blogId?: StringFieldUpdateOperationsInput | string
   }
 
   export type NotificationUpdateWithoutUserInput = {

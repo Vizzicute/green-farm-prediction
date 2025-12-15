@@ -63,7 +63,7 @@ const PredictionCard = ({ prediction }: iComProps) => {
     return tip;
   }
   return (
-    <Card className="w-full rounded-xs sm:w-[45%] lg:w-[30%] 2xl:w-[23%] bg-primary/5">
+    <Card className="w-full rounded-xs sm:w-[18rem] lg:w-[19.2rem] 2xl:w-[22rem] bg-primary/5">
       <CardContent>
         <div className="space-y-1">
           <div className="flex items-center justify-between mx-0">

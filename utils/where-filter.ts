@@ -232,6 +232,10 @@ export function buildCommentsWhere(
     where.status = filters.status;
   }
 
+  if (filters.blogId) {
+    where.blogId = filters.blogId
+  }
+
   if (type === "BLOG" && filters.search && typeof filters.search === "string") {
     where.OR = [
       { content: { contains: filters.search } },

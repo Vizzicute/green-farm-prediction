@@ -15,7 +15,7 @@ import UserButton from "@/components/user-button";
 import { navbarLinks } from "@/data";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSession } from "@/hooks/use-session";
-import { ArrowRight, User2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -72,15 +72,28 @@ const Navbar = () => {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link
-                    href={"/admin/profile"}
-                    className="flex flex-nowrap items-center"
-                  >
-                    <User2 className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </Link>
-                </DropdownMenuItem>
+                {navbarLinks.map((nav, index) => (
+                  <DropdownMenuItem key={index}>
+                    <Link
+                      href={nav.link}
+                      className={buttonVariants({
+                        variant: pathname === nav.link ? "default" : "ghost",
+                      })}
+                    >
+                      {nav.text}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+                {session && (
+                  <DropdownMenuItem>
+                    <Link
+                      href={"/dashboard"}
+                      className="flex flex-nowrap items-center"
+                    >
+                      <span>Dashboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem>
                   {session ? (
                     <LogoutButton variant={"ghost"} className="p-0" />

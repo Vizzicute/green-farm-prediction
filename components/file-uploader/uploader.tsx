@@ -27,7 +27,7 @@ interface UploaderState {
 }
 
 interface iComProps {
-  value?: string;
+  value?: string | null;
   onChange?: (value: string) => void;
 }
 
@@ -43,13 +43,17 @@ const Uploader = ({ value, onChange }: iComProps) => {
   });
 
   useEffect(() => {
-    if(!value) return;
-    const fileUrl = useConstructUrl(value);
-    setFileState((prev) => ({
-      ...prev,
-      key: value,
-      objectUrl: fileUrl,
-    }));
+    if (!value) return;
+    if (typeof value === "string" && value.startsWith("http")) {
+      return;
+    } else {
+      const fileUrl = useConstructUrl(value);
+      setFileState((prev) => ({
+        ...prev,
+        key: value,
+        objectUrl: fileUrl,
+      }));
+    }
   }, [value]);
 
   async function uploadFile(file: File) {
@@ -164,7 +168,19 @@ const Uploader = ({ value, onChange }: iComProps) => {
 
   async function handleRemoveFile() {
     if (fileState.isDeleting || !fileState.objectUrl) return;
-
+    if (value && typeof value === "string" && value.startsWith("http")) {
+      setFileState((prev) => ({
+        ...prev,
+        isDeleting: true,
+      }));
+      onChange?.("");
+      setFileState((prev) => ({
+        ...prev,
+        isDeleting: false,
+      }));
+      toast.success("File removed");
+      return;
+    }
     try {
       setFileState((prev) => ({
         ...prev,
@@ -249,7 +265,19 @@ const Uploader = ({ value, onChange }: iComProps) => {
       return <RenderErrorState />;
     }
 
-    if (fileState.objectUrl) {
+    if (
+      !fileState.objectUrl &&
+      typeof value === "string" &&
+      value.startsWith("http")
+    ) {
+      return (
+        <RenderUploadedState
+          previewUrl={value}
+          isDeleting={fileState.isDeleting}
+          handleRemoveFile={handleRemoveFile}
+        />
+      );
+    } else if (fileState.objectUrl && value && !value.startsWith("http")) {
       return (
         <RenderUploadedState
           previewUrl={fileState.objectUrl}
@@ -277,7 +305,9 @@ const Uploader = ({ value, onChange }: iComProps) => {
     multiple: false,
     maxSize: 5 * 1024 * 1024,
     onDropRejected: rejectedFiles,
-    disabled: fileState.uploading || !!fileState.objectUrl,
+    disabled:
+      fileState.uploading ||
+      !!fileState.objectUrl,
   });
 
   return (

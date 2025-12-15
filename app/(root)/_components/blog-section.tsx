@@ -29,9 +29,9 @@ const BlogSection = () => {
         Sport News, Expert tips, strategies, and analysis to improve your
         betting game
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full mx-auto p-2 space-y-3">
+      <div className="flex flex-wrap w-full items-center justify-center mx-auto p-2 gap-2">
         {isLoading ? (
-          <div className="animate-pulse">
+          <div className="animate-pulse flex items-center self-center">
             <Loader2 className="animate-spin" /> Loading...
           </div>
         ) : (
@@ -42,7 +42,7 @@ const BlogSection = () => {
               <Link
                 key={blog.id}
                 href={blog.slug}
-                className="relative max-w-sm h-[350px] rounded-2xl overflow-hidden shadow-lg bg-cover bg-center border border-secondary"
+                className="relative max-w-sm min-w-[20rem] h-[350px] rounded-2xl overflow-hidden shadow-lg bg-cover bg-center border border-secondary"
                 style={{
                   backgroundImage: `url(${image})`,
                 }}

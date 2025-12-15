@@ -82,7 +82,7 @@ import {
 } from "@/app/(protected)/admin/blogs/_server/comment-action";
 import { getPredictions } from "@/app/(root)/_server/prediction";
 import { getPageDataBySlug } from "@/app/(root)/_server/pagedata";
-import { getBlogPost, getBlogPosts } from "@/app/(root)/_server/blog";
+import { getBlogPost, getBlogPostBySlug, getBlogPosts } from "@/app/(root)/_server/blog";
 import { notificationSchema } from "@/schema/notification";
 import {
   getNotifications,
@@ -98,6 +98,15 @@ import {
   upsertSubscription,
 } from "@/app/(root)/_server/subscription";
 import { getSettingsByCategory } from "@/app/(root)/_server/setting";
+import {
+  getBlogCategories,
+  getBlogCategory,
+  getBlogCategoryBySlug,
+} from "@/app/(root)/blogs/_server/categories";
+import { commentSchema } from "@/schema/comment";
+import { addComment } from "@/app/(root)/blogs/_server/comments";
+import { userSchema } from "@/schema/user";
+import { updateProfile } from "@/app/(protected)/dashboard/_server/user";
 
 export const appRouter = createTRPCRouter({
   // Create Operations (Mutations)
@@ -141,6 +150,10 @@ export const appRouter = createTRPCRouter({
   upsertSubscription: baseProcedure
     .input(subscriptionSchema)
     .mutation(async (opts) => await upsertSubscription(opts.input)),
+
+  addComment: baseProcedure
+    .input(commentSchema)
+    .mutation(async (opts) => await addComment(opts.input)),
 
   // Read Operations (Queries)
 
@@ -277,9 +290,10 @@ export const appRouter = createTRPCRouter({
     .input(
       z.object({
         userId: z.string(),
+        predictionFilters: predictionFilterSchema,
       })
     )
-    .query(async (opts) => await getUserSubscriptions(opts.input.userId)),
+    .query(async (opts) => await getUserSubscriptions(opts.input.userId, opts.input.predictionFilters)),
 
   getSubscriptionCategory: baseProcedure
     .input(z.string())
@@ -323,6 +337,28 @@ export const appRouter = createTRPCRouter({
       })
     )
     .query(async (opts) => getBlogPost(opts.input.id)),
+
+  getBlogPostBySlug: baseProcedure
+    .input(
+      z.object({
+        slug: z.string(),
+      })
+    )
+    .query(async (opts) => getBlogPostBySlug(opts.input.slug)),
+
+  getBlogCategoryBySlug: baseProcedure
+    .input(
+      z.object({
+        slug: z.string(),
+      })
+    )
+    .query(async (opts) => getBlogCategoryBySlug(opts.input.slug)),
+
+  getBlogCategories: baseProcedure.query(async () => getBlogCategories()),
+
+  getBlogCategory: baseProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async (opts) => getBlogCategory(opts.input.id)),
 
   adminGetBlogPosts: baseProcedure
     .input(
@@ -579,6 +615,10 @@ export const appRouter = createTRPCRouter({
       async (opts) =>
         await adminUpdateCommentStatus(opts.input.id, opts.input.status)
     ),
+
+  updateProfile: baseProcedure
+  .input(userSchema)
+  .mutation(async (opts) => await updateProfile(opts.input)),
 
   markNotificationAsRead: baseProcedure
     .input(z.object({ id: z.string() }))

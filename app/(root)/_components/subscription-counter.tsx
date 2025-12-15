@@ -25,7 +25,6 @@ import { ShoppingCart } from "lucide-react";
 import LoadingButton from "@/components/loading-button";
 import { fetchExchangeRates, getExchangeRate } from "@/utils/exchange-rates";
 import { toast } from "sonner";
-import { redirect } from "next/navigation";
 import dynamic from "next/dynamic";
 import { parseDiscountData } from "@/utils/discounts";
 import { useSession } from "@/hooks/use-session";
@@ -35,6 +34,7 @@ import currency from "@/data/currencies.json";
 import { CurrencyDiscount, Price } from "@/schema/settings";
 import { formatCurrency } from "@/utils/format-currency";
 import { SubDuration } from "@/generated/prisma";
+import { useRouter } from "next/navigation";
 
 // Dynamically import PaymentDialog with SSR disabled
 const PaymentDialog = dynamic(() => import("./payment"), {
@@ -47,12 +47,13 @@ interface Props {
 
 const SubscriptionCounter = ({ className }: Props) => {
   const trpc = useTRPC();
+  const router = useRouter();
   const { data: userSession } = useSession();
   const userId = userSession?.user.id ?? "";
 
   // Fetch subscriptions, categories, prices, discounts
   const { data: subscriptions } = useQuery(
-    trpc.getUserSubscriptions.queryOptions({ userId })
+    trpc.getUserSubscriptions.queryOptions({ userId, predictionFilters: {} })
   );
   const { data: subscriptionCategories, isLoading: categoriesLoading } =
     useQuery(trpc.getSubscriptionCategories.queryOptions());
@@ -222,7 +223,7 @@ const SubscriptionCounter = ({ className }: Props) => {
     try {
       if (!userSession?.session) {
         toast.error("Please log in to subscribe.");
-        redirect("/login");
+        router.push("/login");
       }
       setOpenPaymentDialog(true);
       setIsLoading(true);
@@ -242,7 +243,9 @@ const SubscriptionCounter = ({ className }: Props) => {
       <CardContent className="w-full flex flex-col items-center justify-center gap-4 p-2">
         {isAllOptionSelected() && subscriptionCategory && (
           <div className="flex flex-col p-2 items-center justify-start">
-            <h2 className="text-lg font-semibold text-start">Benefits of Subscription</h2>
+            <h2 className="text-lg font-semibold text-start">
+              Benefits of Subscription
+            </h2>
             <ul className="list-disc pl-5 text-sm">
               <li>
                 Access to {subscriptionCategory.minOdds} odds -{" "}
@@ -262,30 +265,27 @@ const SubscriptionCounter = ({ className }: Props) => {
             <div className="w-full flex flex-row justify-around items-center">
               <FormField
                 control={form.control}
-                name="subscriptionCategoryId"
+                name="currency"
                 render={({ field }) => (
-                  <FormItem className="w-[45%] me-1">
+                  <FormItem className="w-[45%]">
                     <FormControl>
                       <Select
                         value={field.value}
                         onValueChange={field.onChange}
                       >
                         <SelectTrigger className="w-full bg-stone-100 p-2 rounded-full focus-none">
-                          <SelectValue placeholder="Desired Plan" />
+                          <SelectValue placeholder="Currency" className="truncate max-w-full" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                            <SelectLabel>Select Desired Plan</SelectLabel>
-                            {subscriptionCategories
-                              ?.filter((category) => category.name !== "free")
-                              .map((category) => (
-                                <SelectItem
-                                  key={category.id}
-                                  value={category.id}
-                                >
-                                  {category.name} {`(${category.minOdds} odds - ${category.maxOdds} odds daily)`}
-                                </SelectItem>
-                              ))}
+                            <SelectLabel>
+                              Choose Your Preferred Currency
+                            </SelectLabel>
+                            {Object.entries(currency).map(([code, info]) => (
+                              <SelectItem key={info.name} value={info.code}>
+                                {info.name} ({info.symbol})
+                              </SelectItem>
+                            ))}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -326,24 +326,25 @@ const SubscriptionCounter = ({ className }: Props) => {
 
             <FormField
               control={form.control}
-              name="currency"
+              name="subscriptionCategoryId"
               render={({ field }) => (
-                <FormItem className="w-[45%]">
+                <FormItem className="w-[45%] me-1">
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger className="w-full bg-stone-100 p-2 rounded-full focus-none">
-                        <SelectValue placeholder="Choose Currency" />
+                        <SelectValue placeholder="Desired Plan" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>
-                            Choose Your Preferred Currency
-                          </SelectLabel>
-                          {Object.entries(currency).map(([code, info]) => (
-                            <SelectItem key={info.name} value={info.code}>
-                              {info.name} ({info.symbol})
-                            </SelectItem>
-                          ))}
+                          <SelectLabel>Select Desired Plan</SelectLabel>
+                          {subscriptionCategories
+                            ?.filter((category) => category.name !== "free")
+                            .map((category) => (
+                              <SelectItem key={category.id} value={category.id}>
+                                {category.name}{" "}
+                                {`(${category.minOdds} odds - ${category.maxOdds} odds daily)`}
+                              </SelectItem>
+                            ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>

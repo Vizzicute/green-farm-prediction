@@ -1,11 +1,23 @@
 import { prisma } from "@/lib/prisma";
+import { PredictionFilter } from "@/schema/prediction";
 import { SubscriptionType } from "@/schema/subscription";
 import { MutationResponse } from "@/types";
+import { buildPredictionsWhere } from "@/utils/where-filter";
 
-export async function getUserSubscriptions(userId: string
+export async function getUserSubscriptions(userId: string, predictionFilters: PredictionFilter
 ) {
+
+  const where = buildPredictionsWhere(predictionFilters);
+
   const data = await prisma.subscription.findMany({
-    where: { userId }
+    where: { userId },
+    include: {
+      SubscriptionCategory: {
+        include: {
+          predictions: { where }
+        }
+      }
+    }
   });
 
   return data;

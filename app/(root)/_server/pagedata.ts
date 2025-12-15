@@ -8,3 +8,8 @@ export async function getPageDataBySlug(slug: string) {
 
   return data;
 }
+
+export async function getAllPageData() {
+  const data = await prisma.pageData.findMany();
+  return data;
+}

@@ -1,4 +1,10 @@
-import { PredictionStatus, SportType } from "@/generated/prisma";
+import {
+  BlogStatus,
+  CommentStatus,
+  CommentType,
+  PredictionStatus,
+  SportType,
+} from "@/generated/prisma";
 
 export type MutationResponse = {
   status: number;
@@ -47,4 +53,58 @@ export type Predictions = {
   winProb: number;
   homeTeam: string;
   awayTeam: string;
+};
+
+export type Blog = {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  status: BlogStatus;
+  featuredImage: string;
+  authorId: string;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  categories: {
+    id: string;
+    name: string;
+    slug: string;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+  comments: Comment[];
+};
+
+export type Comment = {
+  id: string;
+  type: CommentType;
+  userId: string | null;
+  content: string;
+  status: CommentStatus;
+  blogId: string;
+  guestName: string | null;
+  guestEmail: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type BlogCategory = {
+  id: string;
+  name: string;
+  slug: string;
+  blogs: {
+    id: string;
+    title: string;
+    slug: string;
+    content: string;
+    status: BlogStatus;
+    featuredImage: string;
+    authorId: string;
+    publishedAt: string | null;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+  createdAt: string;
+  updatedAt: string;
 };
