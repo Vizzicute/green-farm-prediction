@@ -129,7 +129,7 @@ const UpdateResultForm = ({ prediction, refetch }: iComProps) => {
             <FormItem className="w-full sm:w-[30%] md:w-[30%]">
               <FormControl>
                 <Input
-                  type="text"
+                  type="tel"
                   placeholder="Away Team"
                   className="bg-stone-100 rounded-sm border-secondary focus-none"
                   {...field}
