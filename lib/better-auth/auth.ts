@@ -23,9 +23,9 @@ export const auth = betterAuth({
     emailOTP({
       async sendVerificationOTP({ email, otp }) {
         const { data, error } = await resend.emails.send({
-          from: "Green Farm Prediction <onboarding@resend.dev>",
+          from: "noreply@greenfarmsport.com",
           to: [email],
-          subject: "Verify your email - Green Farm Prediction",
+          subject: "Verify your email - Green Farm Sport",
           react: EmailVerificationTemplate({ email, otp }),
         });
       },

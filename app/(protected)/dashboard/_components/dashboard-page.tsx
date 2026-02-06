@@ -9,7 +9,7 @@ import BlogSection from "../../../(root)/_components/blog-section";
 import PredictionCard from "../../../(root)/_components/prediction-card";
 import NotificationsDropdown from "../../admin/_components/notification";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogTrigger,
@@ -34,7 +34,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { CalendarIcon, Loader2 } from "lucide-react";
+import { CalendarIcon, Home, Loader2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { isAfter } from "date-fns";
 import LogoutButton from "@/components/logout-button";
@@ -42,6 +42,7 @@ import ThemeToggler from "@/components/theme-toggler";
 import ProfileForm from "./profile-form";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
 
 const DashboardPage = () => {
   const trpc = useTRPC();
@@ -59,7 +60,7 @@ const DashboardPage = () => {
         customStartDate: formattedDate(customDate),
         customEndDate: formattedDate(customDate),
       },
-    })
+    }),
   );
 
   const isSubscribed = subscriptions?.some((s: any) => s.isActive === true);
@@ -75,7 +76,7 @@ const DashboardPage = () => {
       filters: { search: session?.user?.email ?? "" },
       pageNumber: 1,
       pageSize: 10,
-    })
+    }),
   );
 
   const { data: blogs } = useQuery(
@@ -83,16 +84,16 @@ const DashboardPage = () => {
       filters: { status: "PUBLISHED" },
       page: 1,
       pageSize: 1,
-    })
+    }),
   );
 
   const { mutate: addComment, isPending: isAddingComment } = useMutation(
-    trpc.addComment.mutationOptions()
+    trpc.addComment.mutationOptions(),
   );
 
   const { mutate: notifyNewSubscription, isPending: isNotifying } = useMutation(
-      trpc.newNotification.mutationOptions()
-    );
+    trpc.newNotification.mutationOptions(),
+  );
 
   const [subscriptionComment, setSubscriptionComment] = useState("");
 
@@ -120,7 +121,7 @@ const DashboardPage = () => {
           setSubscriptionComment("");
           toast.success("Comment submitted");
         },
-      }
+      },
     );
   };
 
@@ -133,7 +134,7 @@ const DashboardPage = () => {
       },
       currentPage: 1,
       pageSize: 6,
-    })
+    }),
   );
 
   // profile edit handled by `ProfileForm` which calls TRPC `updateProfile`
@@ -143,9 +144,12 @@ const DashboardPage = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <div className="flex items-center gap-2">
+          <Link href="/" className={buttonVariants({ variant: "outline" })}>
+            <Home />
+          </Link>
           <ThemeToggler />
           <NotificationsDropdown variant={"outline"} />
-          <LogoutButton />
+          <LogoutButton text={false} />
         </div>
       </div>
 
@@ -314,8 +318,8 @@ const DashboardPage = () => {
                         <span className="font-semibold text-amber-600">
                           Subscription is currently freezed!.
                         </span>
-                      ) : subscription.SubscriptionCategory?.predictions.length ===
-                      0 ? (
+                      ) : subscription.SubscriptionCategory?.predictions
+                          .length === 0 ? (
                         <span className="font-semibold">
                           {isAfter(customDate, new Date())
                             ? "No Prediction Yet!"
@@ -332,7 +336,7 @@ const DashboardPage = () => {
                                   subscription.SubscriptionCategory,
                               }}
                             />
-                          )
+                          ),
                         )
                       )}
                     </div>
@@ -396,21 +400,20 @@ const DashboardPage = () => {
                     placeholder="Share feedback regarding your subscription"
                     rows={3}
                   />
-                      <Button
-                        onClick={handleAddSubscriptionComment}
-                        disabled={isAddingComment}
-                        className="w-full"
-                      >
-                        {isAddingComment ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Posting...
-                          </>
-                        ) : (
-                          "Post Comment"
-                        )}
-                      </Button>
-                  
+                  <Button
+                    onClick={handleAddSubscriptionComment}
+                    disabled={isAddingComment}
+                    className="w-full"
+                  >
+                    {isAddingComment ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Posting...
+                      </>
+                    ) : (
+                      "Post Comment"
+                    )}
+                  </Button>
                 </div>
 
                 <div className="mt-4 space-y-2">
@@ -426,9 +429,7 @@ const DashboardPage = () => {
                     userComments?.map((c: any) => (
                       <div key={c.id} className="p-2 border rounded-md">
                         <div className="flex items-center justify-between mb-1">
-                          <div className="text-sm font-medium">
-                            You
-                          </div>
+                          <div className="text-sm font-medium">You</div>
                           <div className="text-xs text-muted-foreground">
                             {new Date(c.createdAt).toLocaleString()}
                           </div>

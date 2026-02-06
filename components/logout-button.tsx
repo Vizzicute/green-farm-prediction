@@ -12,9 +12,15 @@ import { LogOut } from "lucide-react";
 interface iComProps extends ButtonProps {
   className?: string;
   onClick?: () => void;
+  text?: boolean;
 }
 
-const LogoutButton = ({ className, onClick, ...props }: iComProps) => {
+const LogoutButton = ({
+  className,
+  onClick,
+  text = true,
+  ...props
+}: iComProps) => {
   const router = useRouter();
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -26,7 +32,7 @@ const LogoutButton = ({ className, onClick, ...props }: iComProps) => {
           onError: (error) => {
             toast.error(error.error.message);
             return;
-          }
+          },
         },
       });
     },
@@ -38,7 +44,7 @@ const LogoutButton = ({ className, onClick, ...props }: iComProps) => {
       className={className}
       {...props}
     >
-      <LogOut className="size-4"/> Log out
+      <LogOut className="size-4" /> {text ? "Log out" : null}
     </LoadingButton>
   );
 };

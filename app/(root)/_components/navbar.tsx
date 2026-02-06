@@ -38,7 +38,7 @@ const Navbar = () => {
               />
             </div>
             <span className="text-2xl font-bold brand-name">
-              Green Farm <span className="max-sm:hidden">Predictions</span>
+              Green Farm <span className="max-sm:hidden">Sport</span>
             </span>
           </div>
 
