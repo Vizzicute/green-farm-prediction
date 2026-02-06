@@ -84,6 +84,7 @@ model Subscription {
   User   User?   @relation(fields: [userId], references: [id])
   userId String?
 
+  @@unique([userId, subscriptionCategoryId])
   @@map("subscription")
 }
 
@@ -167,7 +168,7 @@ model Blog {
   categories BlogCategory[]
   comments   Comment[]
 
-  @@unique([slug, featuredImage])
+  @@unique([slug])
   @@map("blog")
 }
 
@@ -187,18 +188,17 @@ model BlogCategory {
 model Comment {
   id         String        @id @default(uuid())
   type       CommentType
-  guestName  String        @db.Text
-  guestEmail String
+  guestName  String?       @db.Text
+  guestEmail String?
   content    String        @db.Text
   status     CommentStatus @default(PENDING)
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @default(now()) @updatedAt
-  blogId     String?
-  blog       Blog?         @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId     String
+  blog       Blog          @relation(fields: [blogId], references: [id], onDelete: Cascade)
   userId     String?
   user       User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([guestEmail])
   @@map("comment")
 }
 
