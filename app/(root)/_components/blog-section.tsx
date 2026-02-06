@@ -41,7 +41,7 @@ const BlogSection = () => {
             return (
               <Link
                 key={blog.id}
-                href={blog.slug}
+                href={`/blogs/${blog.slug}`}
                 className="relative max-w-sm min-w-[20rem] h-[350px] rounded-2xl overflow-hidden shadow-lg bg-cover bg-center border border-secondary"
                 style={{
                   backgroundImage: `url(${image})`,
