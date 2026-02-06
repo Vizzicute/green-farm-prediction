@@ -142,7 +142,9 @@ const DashboardPage = () => {
   return (
     <div className="w-full p-4 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <h1 className="text-2xl font-bold">
+          <Link href="/admin">Dashboard</Link>
+        </h1>
         <div className="flex items-center gap-2">
           <Link href="/" className={buttonVariants({ variant: "outline" })}>
             <Home />

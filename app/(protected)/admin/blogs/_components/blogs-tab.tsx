@@ -206,7 +206,7 @@ const BlogsTab = () => {
                     </TableCell>
                     <TableCell>
                       <Link
-                        href={`${env.NEXT_PUBLIC_APP_URL}/blog/${data.slug}`}
+                        href={`${env.NEXT_PUBLIC_APP_URL}/blogs/${data.slug}`}
                         target="_blank"
                       >
                         <span className="line-clamp-1">{data.title}</span>
