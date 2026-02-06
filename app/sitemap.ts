@@ -28,12 +28,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(page.updatedAt || page.createdAt),
     })) || []),
     ...(blogs?.map((blog) => ({
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/blog/${blog.slug}`,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/blogs/${blog.slug}`,
       priority: 0.5,
       lastModified: new Date(blog.updatedAt || blog.createdAt),
     })) || []),
     ...(blogCategories?.map((category) => ({
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/blog/category/${category.slug}`,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/blogs/category/${category.slug}`,
       priority: 0.5,
       lastModified: new Date(category.updatedAt || category.createdAt),
     })) || []),

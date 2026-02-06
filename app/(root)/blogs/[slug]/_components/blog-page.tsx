@@ -122,7 +122,7 @@ const BlogPage = ({ slug }: { slug: string }) => {
                 <span key={cat.id}>
                   {index > 0 && <span> • </span>}
                   <Link
-                    href={`/blog/category/${cat.slug}`}
+                    href={`/blogs/category/${cat.slug}`}
                     className="hover:text-blue-500"
                   >
                     {cat.name}

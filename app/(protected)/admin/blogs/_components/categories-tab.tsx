@@ -82,11 +82,11 @@ const CategoriesTab = ({ refetch, isLoading, categories }: iComProps) => {
                     <TableCell>{item.name}</TableCell>
                     <TableCell>
                       <Link
-                        href={`${env.NEXT_PUBLIC_APP_URL}/blog/category${item.slug}`}
+                        href={`${env.NEXT_PUBLIC_APP_URL}/blogs/category${item.slug}`}
                         className="hover:text-primary underline"
                         target="_blank"
                       >
-                        {env.NEXT_PUBLIC_APP_URL}/blog/category{item.slug}
+                        {env.NEXT_PUBLIC_APP_URL}/blogs/category{item.slug}
                       </Link>
                     </TableCell>
                     <TableCell>

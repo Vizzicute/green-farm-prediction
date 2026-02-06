@@ -29,10 +29,10 @@ const BlogMiniNav = ({ blogCategories, loading }: BlogMiniNavProps) => {
       ) : (
         blogCategories?.map((category) => (
           <Link
-            href={`/blog/category/${category.slug}`}
+            href={`/blogs/category/${category.slug}`}
             key={category.id}
             className={`hidden md:flex capitalize font-semibold hover:underline ${
-              pathname === `/blog/category/${category.slug}` && "text-cyan-300"
+              pathname === `/blogs/category/${category.slug}` && "text-cyan-300"
             }`}
           >
             {category.name}

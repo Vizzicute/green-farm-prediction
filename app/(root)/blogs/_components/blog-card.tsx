@@ -24,7 +24,7 @@ interface iComProps {
 const BlogCard = ({ blog, textSize }: iComProps) => {
   return (
     <Link
-      href={`/blog/${blog.slug}`}
+      href={`/blogs/${blog.slug}`}
       className="flex flex-row gap-2 items-center justify-center"
     >
       <img
