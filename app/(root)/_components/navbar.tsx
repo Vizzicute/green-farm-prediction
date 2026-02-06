@@ -29,7 +29,7 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2">
             <div className="h-10 w-10 rounded-full">
               <img
                 src={"/logo.png"}
@@ -40,7 +40,7 @@ const Navbar = () => {
             <span className="text-2xl font-bold brand-name">
               Green Farm <span className="max-sm:hidden">Sport</span>
             </span>
-          </div>
+          </Link>
 
           <nav className="hidden md:flex items-center space-x-6">
             {navbarLinks.map((nav, index) => (

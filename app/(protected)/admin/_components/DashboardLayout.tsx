@@ -91,11 +91,12 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <Link
-                      href={"/admin/profile"}
+                      href={"/dashboard"}
+                      target="_blank"
                       className="flex flex-nowrap items-center"
                     >
                       <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
+                      <span>Visit Dashboard</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
