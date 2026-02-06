@@ -26,20 +26,20 @@ const PricesForm = () => {
 
   // Fetch categories
   const { data: categories } = useQuery(
-    trpc.adminGetSubscriptionCategories.queryOptions()
+    trpc.adminGetSubscriptionCategories.queryOptions(),
   );
 
   // Fetch pricing settings
   const { data: prices, refetch } = useQuery(
-    trpc.adminGetSettingsByCategory.queryOptions({ category: "prices" })
+    trpc.adminGetSettingsByCategory.queryOptions({ category: "prices" }),
   );
 
   const { data: defaultPrice } = useQuery(
-    trpc.adminGetSettingsByCategory.queryOptions({ category: "defaultPrice" })
+    trpc.adminGetSettingsByCategory.queryOptions({ category: "defaultPrice" }),
   );
 
   const { mutate, isPending: updatingPrices } = useMutation(
-    trpc.adminUpdateSettings.mutationOptions()
+    trpc.adminUpdateSettings.mutationOptions(),
   );
 
   const priceData: Price[] = prices?.value ? JSON.parse(prices.value) : [];
@@ -82,11 +82,15 @@ const PricesForm = () => {
 
   /** Submit handler */
   async function onSubmit(data: Price) {
-    const updatedPrices = priceData.map((p) =>
-      p.subscriptionCategoryId === data.subscriptionCategoryId
-        ? { ...p, ratio: data.ratio }
-        : p
-    );
+    const updatedPrices = priceData.some(
+      (p) => p.subscriptionCategoryId === data.subscriptionCategoryId,
+    )
+      ? priceData.map((p) =>
+          p.subscriptionCategoryId === data.subscriptionCategoryId
+            ? { ...p, ratio: data.ratio }
+            : p,
+        )
+      : [...priceData, data];
 
     const value = JSON.stringify(updatedPrices);
 
@@ -104,7 +108,7 @@ const PricesForm = () => {
         onError: () => {
           toast.error("Something went wrong while updating social settings.");
         },
-      }
+      },
     );
   }
 
