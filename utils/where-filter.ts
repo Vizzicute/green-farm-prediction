@@ -1,7 +1,7 @@
 import { CommentType, Prisma } from "@/generated/prisma";
 
 export function buildPredictionsWhere(
-  filter: Record<string, any>
+  filter: Record<string, any>,
 ): Prisma.PredictionWhereInput {
   const where: Prisma.PredictionWhereInput = {};
 

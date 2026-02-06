@@ -54,7 +54,7 @@ const DynamicPageContent = () => {
         break;
 
       case "/htft":
-        f.either = {
+        f.htft = {
           in: ["1/1", "1/X", "1/2", "X/1", "X/X", "X/2", "2/1", "2/X", "2/2"],
         };
         break;
@@ -75,7 +75,7 @@ const DynamicPageContent = () => {
         break;
 
       case "/chance":
-        f.either = { in: ["1X", "12", "X2"] };
+        f.chance = { in: ["1X", "12", "X2"] };
         break;
 
       case "/draw":
