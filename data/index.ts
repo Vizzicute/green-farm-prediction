@@ -95,6 +95,7 @@ export const advert = [
 
 export const topleagues = [
   // Top European Domestic Leagues
+  { name: "NBA", value: "nba"},
   { name: "Premier League", value: "epl" },
   { name: "La Liga", value: "spa" },
   { name: "Bundesliga", value: "ger" },

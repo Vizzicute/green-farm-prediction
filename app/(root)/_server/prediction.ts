@@ -10,7 +10,7 @@ export async function getPredictions(
   const where = buildPredictionsWhere(filter);
 
   const data = await prisma.prediction.findMany({
-    orderBy: { datetime: "desc" },
+    orderBy: { datetime: "asc" },
     where,
     take: pageSize,
     skip: (page - 1) * pageSize,

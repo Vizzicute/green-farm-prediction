@@ -10,14 +10,17 @@ import {
 import { cn } from "@/lib/utils";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import React from "react";
-import PredictionCard from "./prediction-card";
 import { dateString } from "@/utils";
 import { Predictions } from "@/types";
 import { isAfter } from "date-fns";
+import { usePathname } from "next/navigation";
+import PredictionTable from "./prediction-table";
 
 interface iComProps {
   predictions: Predictions[] | undefined;
   isLoading: boolean;
+  adlink?: string;
+  adimgurl?: string;
   customDate: Date;
   setCustomDate: React.Dispatch<React.SetStateAction<Date>>;
 }
@@ -26,8 +29,11 @@ const PredictionSection = ({
   predictions,
   isLoading,
   customDate,
+  adlink,
+  adimgurl,
   setCustomDate,
 }: iComProps) => {
+  const pathname = usePathname();
   return (
     <div className="w-full flex flex-col items-center justify-center space-y-2">
       <div className="flex items-center justify-center gap-4 md:gap-6">
@@ -79,7 +85,7 @@ const PredictionSection = ({
       <h3 className="text-center">
         Free Predictions - {dateString(customDate)}
       </h3>
-      <div className="w-full flex flex-row flex-wrap items-center justify-center gap-2 p-4">
+      <div className="w-full flex items-center justify-center gap-2 p-4 max-sm:p-2">
         {isLoading ? (
           <div className="flex items-center justify-center gap-1">
             <Loader2 className="size-4 animate-spin" />{" "}
@@ -92,9 +98,11 @@ const PredictionSection = ({
               : "No Prediction Added!"}
           </span>
         ) : (
-          predictions?.map((prediction) => (
-            <PredictionCard key={prediction.id} prediction={prediction} />
-          ))
+          <PredictionTable
+            predictions={predictions}
+            adlink={adlink}
+            adimgurl={adimgurl}
+          />
         )}
       </div>
     </div>

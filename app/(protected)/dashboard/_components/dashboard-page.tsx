@@ -6,7 +6,6 @@ import { useTRPC } from "@/lib/trpc/client";
 import { useQuery } from "@tanstack/react-query";
 import SubscriptionCounter from "../../../(root)/_components/subscription-counter";
 import BlogSection from "../../../(root)/_components/blog-section";
-import PredictionCard from "../../../(root)/_components/prediction-card";
 import NotificationsDropdown from "../../admin/_components/notification";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -43,6 +42,7 @@ import ProfileForm from "./profile-form";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
+import PredictionTable from "@/app/(root)/_components/prediction-table";
 
 const DashboardPage = () => {
   const trpc = useTRPC();
@@ -315,7 +315,7 @@ const DashboardPage = () => {
                       {subscription.SubscriptionCategory?.name ?? ""} -{" "}
                       {dateString(customDate)}
                     </h3>
-                    <div className="w-full flex flex-row flex-wrap items-center justify-center gap-2 p-4">
+                    <div className="w-full flex flex-col items-center justify-center gap-2 p-4 max-sm:p-2">
                       {subscription.isFreezed ? (
                         <span className="font-semibold text-amber-600">
                           Subscription is currently freezed!.
@@ -328,18 +328,28 @@ const DashboardPage = () => {
                             : "No Prediction Added!"}
                         </span>
                       ) : (
-                        subscription.SubscriptionCategory?.predictions.map(
-                          (prediction) => (
-                            <PredictionCard
-                              key={prediction.id}
-                              prediction={{
-                                ...prediction,
-                                SubscriptionCategory:
-                                  subscription.SubscriptionCategory,
-                              }}
-                            />
-                          ),
-                        )
+                        <>
+                          <PredictionTable
+                            predictions={
+                              subscription.SubscriptionCategory?.predictions.map(
+                                (prediction) => ({
+                                  ...prediction,
+                                  SubscriptionCategory:
+                                    subscription.SubscriptionCategory,
+                                }),
+                              ) ?? []
+                            }
+                          />
+                          <p className="text-gray-500 text-sm font-semibold p-2">
+                            Accumulated Odds:{" "}
+                            {subscription.SubscriptionCategory?.predictions
+                              ?.reduce(
+                                (acc, pred) => acc * (Number(pred.odds) || 1),
+                                1,
+                              )
+                              .toFixed(2) ?? "N/A"}
+                          </p>
+                        </>
                       )}
                     </div>
                   </div>
@@ -349,7 +359,7 @@ const DashboardPage = () => {
                   <h3 className="text-center">
                     Banker Bet - {dateString(customDate)}
                   </h3>
-                  <div className="w-full flex flex-row flex-wrap items-center justify-center gap-2 p-4">
+                  <div className="w-full flex flex-row flex-wrap items-center justify-center gap-2 p-4 max-sm:p-2">
                     {bankerPredictions !== undefined &&
                     bankerPredictions.length === 0 ? (
                       <span className="font-semibold">
@@ -358,12 +368,7 @@ const DashboardPage = () => {
                           : "No Prediction Added!"}
                       </span>
                     ) : (
-                      bankerPredictions?.map((prediction) => (
-                        <PredictionCard
-                          key={prediction.id}
-                          prediction={prediction}
-                        />
-                      ))
+                      <PredictionTable predictions={bankerPredictions} />
                     )}
                   </div>
                 </>

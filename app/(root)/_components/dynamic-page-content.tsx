@@ -110,7 +110,7 @@ const DynamicPageContent = () => {
       <section>
         <Hero />
       </section>
-      <section className="flex items-center justify-center mx-auto">
+      <section className="md:mx-20 m-1 max-sm:max-w-full!">
         <PredictionSection
           isLoading={isLoading}
           customDate={customDate}
@@ -126,7 +126,7 @@ const DynamicPageContent = () => {
               className:
                 "flex items-center justify-center hover:underline rounded",
               variant: "outline",
-            })
+            }),
           )}
         >
           <Banknote className="size-5" /> Banker Bets
@@ -137,7 +137,7 @@ const DynamicPageContent = () => {
             buttonVariants({
               className:
                 "flex max-sm:flex-1 min-sm:w-3xs items-center jusify-center bg-[#0088cc] rounded font-semibold text-white",
-            })
+            }),
           )}
         >
           <Send className="size-6 rounded-full bg-white text-[#0088cc] p-[2px]" />{" "}
@@ -148,7 +148,7 @@ const DynamicPageContent = () => {
         <CategoriesSection />
       </section>
       <section className="mx-auto">
-        <SubscriptionCounter/>
+        <SubscriptionCounter />
       </section>
       <section>
         <BlogSection />
