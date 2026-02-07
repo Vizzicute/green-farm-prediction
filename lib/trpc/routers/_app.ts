@@ -118,7 +118,7 @@ export const appRouter = createTRPCRouter({
         name,
         minOdds,
         maxOdds,
-        uniqueColor!
+        uniqueColor!,
       );
     }),
   adminCreateSubscription: baseProcedure
@@ -128,7 +128,7 @@ export const appRouter = createTRPCRouter({
       return await adminCreateSubscription(
         userId,
         duration,
-        subscriptionCategoryId
+        subscriptionCategoryId,
       );
     }),
   adminAddPrediction: baseProcedure
@@ -169,13 +169,13 @@ export const appRouter = createTRPCRouter({
         }),
         currentPage: z.number().min(1),
         pageSize: z.number().min(1),
-      })
+      }),
     )
     .query(async (opts) => {
       return await getAdminPredictions(
         opts.input.filters,
         opts.input.pageSize,
-        opts.input.currentPage
+        opts.input.currentPage,
       );
     }),
 
@@ -191,13 +191,13 @@ export const appRouter = createTRPCRouter({
         }),
         currentPage: z.number().min(1),
         pageSize: z.number().min(1),
-      })
+      }),
     )
     .query(async (opts) => {
       return await adminGetUsers(
         opts.input.filters,
         opts.input.pageSize,
-        opts.input.currentPage
+        opts.input.currentPage,
       );
     }),
 
@@ -212,7 +212,7 @@ export const appRouter = createTRPCRouter({
           customEndDate: z.string().optional(),
           customStartDate: z.string().optional(),
         }),
-      })
+      }),
     )
     .query(async (opts) => {
       return await adminGetUsersCount(opts.input.filters);
@@ -232,19 +232,23 @@ export const appRouter = createTRPCRouter({
           status: z.enum(PredictionStatus).optional(),
           subscriptionCategoryId: z.string().optional(),
         }),
-      })
+      }),
     )
     .query(async (opts) => {
       return await getAdminPredictionsCount(opts.input.filters);
     }),
 
   adminGetSubscriptionCategories: baseProcedure.query(
-    async () => await adminGetSubscriptionCategories()
+    async () => await adminGetSubscriptionCategories(),
   ),
 
-  getSubscriptionCategories: baseProcedure.query(
-    async () => await getSubscriptionCategories()
-  ),
+  getSubscriptionCategories: baseProcedure
+    .input(
+      z.object({
+        predictionFilters: predictionFilterSchema,
+      }),
+    )
+    .query(async (opts) => await getSubscriptionCategories(opts.input.predictionFilters)),
 
   adminGetSubscriptions: baseProcedure
     .input(
@@ -259,13 +263,13 @@ export const appRouter = createTRPCRouter({
         }),
         currentPage: z.number().min(1),
         pageSize: z.number().min(1),
-      })
+      }),
     )
     .query(async (opts) => {
       return await adminGetSubscriptions(
         opts.input.filters,
         opts.input.currentPage,
-        opts.input.pageSize
+        opts.input.pageSize,
       );
     }),
 
@@ -280,7 +284,7 @@ export const appRouter = createTRPCRouter({
           customStartDate: z.string().optional(),
           customEndDate: z.string().optional(),
         }),
-      })
+      }),
     )
     .query(async (opts) => {
       return await adminGetSubscriptionsCount(opts.input.filters);
@@ -291,9 +295,15 @@ export const appRouter = createTRPCRouter({
       z.object({
         userId: z.string(),
         predictionFilters: predictionFilterSchema,
-      })
+      }),
     )
-    .query(async (opts) => await getUserSubscriptions(opts.input.userId, opts.input.predictionFilters)),
+    .query(
+      async (opts) =>
+        await getUserSubscriptions(
+          opts.input.userId,
+          opts.input.predictionFilters,
+        ),
+    ),
 
   getSubscriptionCategory: baseProcedure
     .input(z.string())
@@ -320,13 +330,13 @@ export const appRouter = createTRPCRouter({
         }),
         page: z.number().min(1),
         pageSize: z.number().min(1),
-      })
+      }),
     )
     .query(async (opts) => {
       return await getBlogPosts(
         opts.input.filters,
         opts.input.pageSize,
-        opts.input.page
+        opts.input.page,
       );
     }),
 
@@ -334,7 +344,7 @@ export const appRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-      })
+      }),
     )
     .query(async (opts) => getBlogPost(opts.input.id)),
 
@@ -342,7 +352,7 @@ export const appRouter = createTRPCRouter({
     .input(
       z.object({
         slug: z.string(),
-      })
+      }),
     )
     .query(async (opts) => getBlogPostBySlug(opts.input.slug)),
 
@@ -350,7 +360,7 @@ export const appRouter = createTRPCRouter({
     .input(
       z.object({
         slug: z.string(),
-      })
+      }),
     )
     .query(async (opts) => getBlogCategoryBySlug(opts.input.slug)),
 
@@ -371,13 +381,13 @@ export const appRouter = createTRPCRouter({
         }),
         page: z.number().min(1),
         pageSize: z.number().min(1),
-      })
+      }),
     )
     .query(async (opts) => {
       return await adminGetBlogPosts(
         opts.input.filters,
         opts.input.pageSize,
-        opts.input.page
+        opts.input.page,
       );
     }),
 
@@ -385,7 +395,7 @@ export const appRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-      })
+      }),
     )
     .query(async (opts) => adminGetBlogPost(opts.input.id)),
 
@@ -398,20 +408,20 @@ export const appRouter = createTRPCRouter({
           customEndDate: z.string().optional(),
           customStartDate: z.string().optional(),
         }),
-      })
+      }),
     )
     .query(async (opts) => {
       return await adminGetBlogPostsCount(opts.input.filters);
     }),
 
   adminGetBlogCategories: baseProcedure.query(async () =>
-    adminGetBlogCategories()
+    adminGetBlogCategories(),
   ),
 
   adminGetSettingsByCategory: baseProcedure
     .input(z.object({ category: z.string() }))
     .query(
-      async (opts) => await adminGetSettingsByCategory(opts.input.category)
+      async (opts) => await adminGetSettingsByCategory(opts.input.category),
     ),
 
   getSettingsByCategory: baseProcedure
@@ -430,7 +440,7 @@ export const appRouter = createTRPCRouter({
         }),
         pageSize: z.number().min(1),
         pageNumber: z.number().min(1),
-      })
+      }),
     )
     .query(
       async (opts) =>
@@ -438,8 +448,8 @@ export const appRouter = createTRPCRouter({
           opts.input.type,
           opts.input.filters,
           opts.input.pageSize,
-          opts.input.pageNumber
-        )
+          opts.input.pageNumber,
+        ),
     ),
 
   adminGetCommentsCount: baseProcedure
@@ -452,11 +462,11 @@ export const appRouter = createTRPCRouter({
           customEndDate: z.string().optional(),
           customStartDate: z.string().optional(),
         }),
-      })
+      }),
     )
     .query(
       async (opts) =>
-        await adminGetCommentsCount(opts.input.type, opts.input.filters)
+        await adminGetCommentsCount(opts.input.type, opts.input.filters),
     ),
 
   getPredictions: baseProcedure
@@ -465,13 +475,13 @@ export const appRouter = createTRPCRouter({
         filters: predictionFilterSchema,
         currentPage: z.number().min(1),
         pageSize: z.number().min(1),
-      })
+      }),
     )
     .query(async (opts) => {
       return await getPredictions(
         opts.input.filters,
         opts.input.pageSize,
-        opts.input.currentPage
+        opts.input.currentPage,
       );
     }),
 
@@ -481,22 +491,22 @@ export const appRouter = createTRPCRouter({
         id: z.string(),
         page: z.number(),
         pageSize: z.number(),
-      })
+      }),
     )
     .query(
       async (opts) =>
         await getNotifications(
           opts.input.id,
           opts.input.pageSize,
-          opts.input.page
-        )
+          opts.input.page,
+        ),
     ),
 
   getUnreadNotificationsCount: baseProcedure
     .input(
       z.object({
         id: z.string(),
-      })
+      }),
     )
     .query(async (opts) => await getUnreadNotificationsCount(opts.input.id)),
 
@@ -511,7 +521,7 @@ export const appRouter = createTRPCRouter({
         name,
         minOdds,
         maxOdds,
-        uniqueColor!
+        uniqueColor!,
       );
     }),
 
@@ -528,7 +538,7 @@ export const appRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         role: z.string(),
-      })
+      }),
     )
     .mutation(async (opts) => {
       const { id, role } = opts.input;
@@ -539,7 +549,7 @@ export const appRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         active: z.boolean(),
-      })
+      }),
     )
     .mutation(async (opts) => {
       const { id, active } = opts.input;
@@ -554,7 +564,7 @@ export const appRouter = createTRPCRouter({
         id!,
         userId,
         duration,
-        subscriptionCategoryId
+        subscriptionCategoryId,
       );
     }),
 
@@ -563,7 +573,7 @@ export const appRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         isFreezed: z.boolean(),
-      })
+      }),
     )
     .mutation(async (opts) => {
       const { id, isFreezed } = opts.input;
@@ -586,11 +596,11 @@ export const appRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         status: z.enum(BlogStatus),
-      })
+      }),
     )
     .mutation(
       async (opts) =>
-        await adminUpdateBlogStatus(opts.input.id, opts.input.status)
+        await adminUpdateBlogStatus(opts.input.id, opts.input.status),
     ),
 
   adminUpdateSettings: baseProcedure
@@ -598,10 +608,11 @@ export const appRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         value: z.string(),
-      })
+      }),
     )
     .mutation(
-      async (opts) => await adminUpdateSettings(opts.input.id, opts.input.value)
+      async (opts) =>
+        await adminUpdateSettings(opts.input.id, opts.input.value),
     ),
 
   adminUpdateCommentStatus: baseProcedure
@@ -609,23 +620,23 @@ export const appRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         status: z.enum(CommentStatus),
-      })
+      }),
     )
     .mutation(
       async (opts) =>
-        await adminUpdateCommentStatus(opts.input.id, opts.input.status)
+        await adminUpdateCommentStatus(opts.input.id, opts.input.status),
     ),
 
   updateProfile: baseProcedure
-  .input(userSchema)
-  .mutation(async (opts) => await updateProfile(opts.input)),
+    .input(userSchema)
+    .mutation(async (opts) => await updateProfile(opts.input)),
 
   markNotificationAsRead: baseProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async (opts) => await markNotificationAsRead(opts.input.id)),
 
   markAllAsReadMutation: baseProcedure.mutation(
-    async () => await markAllAsReadMutation()
+    async () => await markAllAsReadMutation(),
   ),
 
   // Delete Operations (Mutations)
@@ -672,7 +683,7 @@ export const appRouter = createTRPCRouter({
       });
     }),
   sendPredictionsToAllSubscribers: baseProcedure.mutation(
-    async () => await sendPredictionsToAllSubscribers()
+    async () => await sendPredictionsToAllSubscribers(),
   ),
 });
 // export type definition of API

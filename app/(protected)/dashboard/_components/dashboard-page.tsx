@@ -63,6 +63,18 @@ const DashboardPage = () => {
     }),
   );
 
+  const {
+    data: subscriptionCategories,
+    isLoading: isSubscriptionCategoriesLoading,
+  } = useQuery(
+    trpc.getSubscriptionCategories.queryOptions({
+      predictionFilters: {
+        customStartDate: formattedDate(customDate),
+        customEndDate: formattedDate(customDate),
+      },
+    }),
+  );
+
   const isSubscribed = subscriptions?.some((s: any) => s.isActive === true);
 
   // Comments: fetch user's subscription comments (search by email)
@@ -303,15 +315,66 @@ const DashboardPage = () => {
                   Next Day
                 </Button>
               </div>
-              {isSubscriptionLoading || isBankerLoading ? (
+              {isSubscriptionLoading ||
+              isBankerLoading ||
+              isSubscriptionCategoriesLoading ? (
                 <div className="flex items-center justify-center gap-1">
                   <Loader2 className="size-4 animate-spin" />{" "}
                   <span className="animate-pulse">Loading Predictions...</span>
                 </div>
+              ) : session?.user?.role === "admin" ? (
+                subscriptionCategories
+                  ?.filter((category) => category.name !== "free")
+                  .map((category) => (
+                    <div key={category.id} className="w-full mb-4">
+                      <h3
+                        className="text-center capitalize"
+                        style={{ color: category.uniqueColor }}
+                      >
+                        {category.name ?? ""} - {dateString(customDate)}
+                      </h3>
+                      <div className="w-full flex flex-col items-center justify-center gap-2 p-4 max-sm:p-2">
+                        {category.predictions.length === 0 ? (
+                          <span className="font-semibold">
+                            {isAfter(customDate, new Date())
+                              ? "No Prediction Yet!"
+                              : "No Prediction Added!"}
+                          </span>
+                        ) : (
+                          <>
+                            <PredictionTable
+                              predictions={
+                                category.predictions.map((prediction) => ({
+                                  ...prediction,
+                                  SubscriptionCategory: category,
+                                })) ?? []
+                              }
+                            />
+                            <p className="text-gray-500 text-sm font-semibold p-2">
+                              Accumulated Odds:{" "}
+                              {category?.predictions
+                                ?.reduce(
+                                  (acc, pred) => acc * (Number(pred.odds) || 1),
+                                  1,
+                                )
+                                .toFixed(2) ?? "N/A"}
+                            </p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))
               ) : subscriptions && subscriptions.length !== 0 ? (
                 subscriptions.map((subscription) => (
                   <div key={subscription.id} className="w-full mb-4">
-                    <h3 className="text-center">
+                    <h3
+                      className="text-center capitalize"
+                      style={{
+                        color:
+                          subscription.SubscriptionCategory?.uniqueColor ??
+                          "#000000",
+                      }}
+                    >
                       {subscription.SubscriptionCategory?.name ?? ""} -{" "}
                       {dateString(customDate)}
                     </h3>

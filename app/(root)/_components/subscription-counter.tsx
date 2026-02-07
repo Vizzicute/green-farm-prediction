@@ -56,7 +56,9 @@ const SubscriptionCounter = ({ className }: Props) => {
     trpc.getUserSubscriptions.queryOptions({ userId, predictionFilters: {} })
   );
   const { data: subscriptionCategories, isLoading: categoriesLoading } =
-    useQuery(trpc.getSubscriptionCategories.queryOptions());
+    useQuery(trpc.getSubscriptionCategories.queryOptions({
+      predictionFilters: {},
+    }));
   const { data: prices } = useQuery(
     trpc.getSettingsByCategory.queryOptions({ category: "prices" })
   );

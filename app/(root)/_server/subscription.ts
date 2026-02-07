@@ -4,9 +4,10 @@ import { SubscriptionType } from "@/schema/subscription";
 import { MutationResponse } from "@/types";
 import { buildPredictionsWhere } from "@/utils/where-filter";
 
-export async function getUserSubscriptions(userId: string, predictionFilters: PredictionFilter
+export async function getUserSubscriptions(
+  userId: string,
+  predictionFilters: PredictionFilter,
 ) {
-
   const where = buildPredictionsWhere(predictionFilters);
 
   const data = await prisma.subscription.findMany({
@@ -14,19 +15,18 @@ export async function getUserSubscriptions(userId: string, predictionFilters: Pr
     include: {
       SubscriptionCategory: {
         include: {
-          predictions: { where }
-        }
-      }
-    }
+          predictions: { where },
+        },
+      },
+    },
   });
 
   return data;
 }
 
 export async function getSubscriptionCategory(id: string) {
-
   const data = await prisma.subscriptionCategory.findUnique({
-    where: { id }
+    where: { id },
   });
 
   if (!data) throw new Error();
@@ -34,11 +34,16 @@ export async function getSubscriptionCategory(id: string) {
   return data;
 }
 
-export async function getSubscriptionCategories() {
-
+export async function getSubscriptionCategories(
+  predictionFilters: PredictionFilter,
+) {
+  const where = buildPredictionsWhere(predictionFilters);
   const data = await prisma.subscriptionCategory.findMany({
     orderBy: {
       createdAt: "asc",
+    },
+    include: {
+      predictions: { where },
     },
   });
 
@@ -47,7 +52,9 @@ export async function getSubscriptionCategories() {
   return data;
 }
 
-export async function upsertSubscription(data: SubscriptionType): Promise<MutationResponse> {
+export async function upsertSubscription(
+  data: SubscriptionType,
+): Promise<MutationResponse> {
   try {
     await prisma.subscription.upsert({
       where: {
@@ -61,12 +68,12 @@ export async function upsertSubscription(data: SubscriptionType): Promise<Mutati
     });
     return {
       status: 200,
-      message: "Subscription Actived!"
-    }
+      message: "Subscription Actived!",
+    };
   } catch {
     return {
       status: 500,
-      message: "Something went wrong"
-    }
+      message: "Something went wrong",
+    };
   }
 }

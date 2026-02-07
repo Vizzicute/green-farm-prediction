@@ -27,7 +27,11 @@ const UserButton = ({ withName = false }: iComProps) => {
           <span className="text-sm font-medium">{session?.user.name}</span>
           <div className="flex items-center gap-1">
             <span className={`w-2 h-2 bg-green-500 rounded-full`} />
-            <span className="text-[10px] text-gray-500 capitalize">user</span>
+            {session && session.user.role && (
+              <span className="text-[10px] text-gray-500 capitalize">
+                {session.user.role}
+              </span>
+            )}
           </div>
         </div>
       )}
